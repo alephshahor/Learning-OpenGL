@@ -82,6 +82,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/adrianalvarezleon/Projects/LearnOpenGL/glad.c">
+			<Option target="LearnOpenGL"/>
+		</Unit>
 		<Unit filename="/Users/adrianalvarezleon/Projects/LearnOpenGL/main.cpp">
 			<Option target="LearnOpenGL"/>
 		</Unit>
