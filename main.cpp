@@ -12,9 +12,15 @@ void processInput(GLFWwindow *window) {
 }
 
 float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f,  0.5f, 0.0f
+        0.5f,  0.5f, 0.0f,  // top right
+        0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left
+};
+
+unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
 };
 
 const char *vertexShaderSource = "#version 330 core\n"
@@ -106,15 +112,19 @@ int main(void){
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    unsigned int vertexBufferObject, vertexArrayObject;
+    unsigned int elementBufferObject, vertexBufferObject, vertexArrayObject;
 
     glGenVertexArrays(1, &vertexArrayObject); // Create buffer
     glGenBuffers(1, &vertexBufferObject); // Create buffer
+    glGenBuffers(1, &elementBufferObject);
+
+    glBindVertexArray(vertexArrayObject);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject); // Bind buffer to GL_ARRAY_BUFFER
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Pass vertices data
 
-    glBindVertexArray(vertexArrayObject);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -133,7 +143,8 @@ int main(void){
 
         glUseProgram(shaderProgram);
         glBindVertexArray(vertexArrayObject); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
